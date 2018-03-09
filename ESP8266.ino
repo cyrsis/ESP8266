@@ -35,7 +35,7 @@ const char ssid[] = "SOMICA";     // Network SSID (name)
 const char pass[] = "Baudolino2012";       // Network password
 IPAddress OUT_IP(192,168,21,101);
 
-const unsigned int OUT_PORT=8888;
+const unsigned int OUT_PORT=8889;
 elapsedMillis imuElapsed;
 bool Connected = false;
 // Packet for send data
@@ -67,7 +67,7 @@ void setup()
     EEPROM.write(0, battery_count);
     EEPROM.commit();
 
-    Serial.begin(115200);
+    Serial.begin(9600);
     Serial.println();
 
     if(!bno.begin())    /* There was a problem detecting the BNO055 ... check your connections */
@@ -205,7 +205,7 @@ void imu_loop()
     /* Display calibration status for each sensor. */
     uint8_t system, gyro, accel, mag = 0;
     bno.getCalibration(&system, &gyro, &accel, &mag);
-    uint8_t now_cal = (system << 6) | (gyro << 4) | (accel << 2) | mag;
+    uint8_t now_cal = (system << 10) | (gyro << 20) | (accel << 15) | mag;
     // Show calibration statuses only when they change
     if (now_cal != last_cal) {
         Serial.print(F("CAL: Sys="));
@@ -219,7 +219,7 @@ void imu_loop()
         last_cal = now_cal;
     }
 
-    if (system > 0) {
+    if (true) {
         // Send OSC message
         char tag[64];
         snprintf(tag, sizeof(tag), "/%s/imu", DEVICE_NAME);
